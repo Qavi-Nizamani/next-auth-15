@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -13,11 +14,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
         let user = null;
 
+        // Cast credentials to the expected type
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
+        };
+
         // logic to salt and hash password
-        const pwHash = saltAndHashPassword(credentials.password);
+        // const pwHash = saltAndHashPassword(password);
 
         // logic to verify if the user exists
-        user = await getUserFromDb(credentials.email, pwHash);
+        // user = await getUserFromDb(email, pwHash);
+        user = await getUserFromDb(email, password);
 
         if (!user) {
           // No user found, so this is their first attempt to login
@@ -32,4 +40,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
 });
 
-const saltAndHashPassword 
+const saltAndHashPassword = (password: string) => {
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(password, salt);
+  return hash;
+};
+
+const getUserFromDb = async (email: string, pwHash: string) => {
+  // logic to get user from database using email and hashed password
+  // This is a mock implementation. Replace it with actual database logic.
+  const mockUserDatabase = [
+    { email: "test@example.com", passwordHash: "hashedpassword123" },
+  ];
+
+  const user = mockUserDatabase.find(
+    (user) => user.email === email && user.passwordHash === pwHash
+  );
+
+  if (user) {
+    return {
+      id: "1",
+      name: "Test User",
+      email: user.email,
+    };
+  }
+
+  return null;
+};
