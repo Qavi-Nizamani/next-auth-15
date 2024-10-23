@@ -20,18 +20,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: credentials?.email,
         }).select("+password");
 
-        if (!user) throw new Error("Wrong Email");
-
-        if (typeof credentials?.password !== "string") {
-          throw new Error("Invalid password format");
+        if (!user) {
+          return null;
         }
 
-        const passwordMatch = await bcrypt.compare(
+        if (typeof credentials?.password !== "string") {
+          return null;
+        }
+
+        console.log(credentials.password, user.password);
+
+        const passwordMatch = bcrypt.compareSync(
           credentials.password,
           user.password
         );
 
-        if (!passwordMatch) throw new Error("Wrong Password");
+        if (!passwordMatch) {
+          return null;
+        }
 
         return user;
       },

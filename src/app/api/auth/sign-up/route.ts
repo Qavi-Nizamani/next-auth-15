@@ -2,6 +2,8 @@ import { connectDB } from "@/lib/mongodb";
 import User, { saltAndHashPassword } from "@/models/User.model";
 
 export async function POST(req: Request) {
+  console.log("req", req);
+
   const { email, password } = await req.json();
 
   try {
@@ -29,5 +31,6 @@ export async function POST(req: Request) {
     });
   } catch (e) {
     console.log(e);
+    return Response.json({ error: e.message }, { status: 500 });
   }
 }

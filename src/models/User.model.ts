@@ -9,14 +9,13 @@ export interface UserDocument {
 }
 
 const UserSchema = new Schema<UserDocument>({
-  email: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
 
 const User = mongoose.models?.User || model<UserDocument>("User", UserSchema);
 
 export default User;
-
 
 export const saltAndHashPassword = (password: string) => {
   const salt = bcrypt.genSaltSync(10);
