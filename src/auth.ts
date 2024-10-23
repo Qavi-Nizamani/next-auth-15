@@ -1,3 +1,5 @@
+import { connectDB } from "@/lib/mongodb";
+import User from "@/models/User.model";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
@@ -12,58 +14,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {},
       },
       authorize: async (credentials) => {
-        let user = null;
+        await connectDB();
 
-        // Cast credentials to the expected type
-        const { email, password } = credentials as {
-          email: string;
-          password: string;
-        };
+        const user = await User.findOne({
+          email: credentials?.email,
+        }).select("+password");
 
-        // logic to salt and hash password
-        // const pwHash = saltAndHashPassword(password);
+        if (!user) throw new Error("Wrong Email");
 
-        // logic to verify if the user exists
-        // user = await getUserFromDb(email, pwHash);
-        user = await getUserFromDb(email, password);
-
-        if (!user) {
-          // No user found, so this is their first attempt to login
-          // meaning this is also the place you could do registration
-          throw new Error("User not found.");
+        if (typeof credentials?.password !== "string") {
+          throw new Error("Invalid password format");
         }
 
-        // return user object with their profile data
+        const passwordMatch = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+
+        if (!passwordMatch) throw new Error("Wrong Password");
+
         return user;
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+  },
 });
-
-export const saltAndHashPassword = (password: string) => {
-  const salt = bcrypt.genSaltSync(10);
-  const hash = bcrypt.hashSync(password, salt);
-  return hash;
-};
-
-const getUserFromDb = async (email: string, pwHash: string) => {
-  // logic to get user from database using email and hashed password
-  // This is a mock implementation. Replace it with actual database logic.
-  const mockUserDatabase = [
-    { email: "test@example.com", passwordHash: "hashedpassword123" },
-  ];
-
-  const user = mockUserDatabase.find(
-    (user) => user.email === email && user.passwordHash === pwHash
-  );
-
-  if (user) {
-    return {
-      id: "1",
-      name: "Test User",
-      email: user.email,
-    };
-  }
-
-  return null;
-};
