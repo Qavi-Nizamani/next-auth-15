@@ -40,7 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
 });
 
-const saltAndHashPassword = (password: string) => {
+export const saltAndHashPassword = (password: string) => {
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(password, salt);
   return hash;
