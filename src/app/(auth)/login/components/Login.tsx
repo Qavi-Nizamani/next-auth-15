@@ -41,6 +41,7 @@ type FormValues = z.infer<typeof formSchema>;
 export default function Login() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -52,6 +53,7 @@ export default function Login() {
 
   async function onSubmit(values: FormValues) {
     setError(null);
+    setIsLoading(true);
 
     const email = values.email;
     const password = values.password;
@@ -69,6 +71,7 @@ export default function Login() {
     } else {
       setError("Wrong email or password. Please try again.");
     }
+    setIsLoading(false);
   }
 
   return (
@@ -117,8 +120,8 @@ export default function Login() {
               {error && (
                 <div className="text-red-600 text-sm text-center">{error}</div>
               )}
-              <Button type="submit" className="w-full">
-                Sign in
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Signing in..." : "Sign in"}
               </Button>
             </form>
           </Form>
