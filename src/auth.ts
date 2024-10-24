@@ -5,6 +5,26 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: true,
+      },
+    },
+    callbackUrl: {
+      name: `__Secure-next-auth.callback-url`,
+      options: {
+        sameSite: "none",
+        path: "/",
+        secure: true,
+      },
+    },
+  },
+
   providers: [
     Credentials({
       // You can specify which fields should be submitted, by adding keys to the `credentials` object.
