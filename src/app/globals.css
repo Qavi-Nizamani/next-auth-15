@@ -22,7 +22,6 @@ body {
     --primary-foreground: 0 0% 98%;
     --secondary: 240 1% 97%;
     --secondary-foreground: 162 74% 27%;
-    /* rgb 243 244 246 to hsl */
     --muted: 240 1% 97%;
     --muted-foreground: 240 3.8% 46.1%;
     --accent: 240 1% 97%;
@@ -30,7 +29,7 @@ body {
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 1% 97%;
-    --input: 240 1% 97%;
+    --input: 240 5.9% 90%;
     --ring: 240 10% 3.9%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
