@@ -76,7 +76,7 @@ export default function Login() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
-            <ShoppingBag className="h-12 w-12 text-primary" />
+            <ShoppingBag className="h-12 w-12 text-highlight" />
           </div>
           <CardTitle className="text-2xl font-bold text-center">
             Login to Your Account
@@ -126,7 +126,7 @@ export default function Login() {
         <CardFooter className="flex flex-col items-center">
           <div className="text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-primary hover:underline">
+            <Link href="/register" className="text-highlight hover:underline">
               Register here
             </Link>
           </div>

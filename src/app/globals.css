@@ -48,13 +48,14 @@ body {
 
     --success: 85 94% 39%;
     --success-foreground: 0 0% 98%;
-    
+
     --warning: 55 100% 50%;
     --warning-foreground: 0 0% 98%;
 
     --info: 162 74% 27%;
     --info-foreground: 0 0% 98%;
   }
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;

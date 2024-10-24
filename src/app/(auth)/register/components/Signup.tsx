@@ -97,7 +97,7 @@ export default function Signup() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
-            <ShoppingBag className="h-12 w-12 text-primary" />
+            <ShoppingBag className="h-12 w-12 text-highlight" />
           </div>
           <CardTitle className="text-2xl font-bold text-center">
             Create an Account
@@ -163,7 +163,7 @@ export default function Signup() {
         <CardFooter className="flex justify-center">
           <p className="text-sm text-muted-foreground">
             Already have an account?{" "}
-            <a href="/login" className="text-primary hover:underline">
+            <a href="/login" className="text-highlight hover:underline">
               Log in
             </a>
           </p>
