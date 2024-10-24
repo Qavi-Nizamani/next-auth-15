@@ -1,36 +1,12 @@
-import { connectDB } from "@/lib/mongodb";
-import User, { saltAndHashPassword } from "@/models/User.model";
+import { registerUser } from "@/services/auth.service";
 
 export async function POST(req: Request) {
-  console.log("req", req);
-
+  // Get email and password from request body
   const { email, password } = await req.json();
 
-  try {
-    await connectDB();
+  const data = await registerUser(email, password);
 
-    const userFound = await User.findOne({ email });
-
-    if (userFound) {
-      return {
-        error: "Email already exists!",
-      };
-    }
-
-    const hashedPassword = saltAndHashPassword(password);
-
-    const user = new User({
-      email,
-      password: hashedPassword,
-    });
-
-    const savedUser = await user.save();
-
-    return Response.json(savedUser, {
-      status: 200,
-    });
-  } catch (e) {
-    console.log(e);
-    return Response.json({ error: e.message }, { status: 500 });
-  }
+  return Response.json(data, {
+    status: 200,
+  });
 }

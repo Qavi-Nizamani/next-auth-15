@@ -1,39 +1,143 @@
-// app/login/page.tsx
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { authenticate } from "@/actions/auth";
+import React from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Link from "next/link";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { ShoppingBag } from "lucide-react";
+
+const formSchema = z.object({
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters long.",
+  }),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
+  function onSubmit(values: FormValues) {
+    // Here you would typically handle the login logic
+    console.log("Login attempted with:", values);
 
-    const formData = new FormData(event.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    // const email = formData.get("email") as string;
+    // const password = formData.get("password") as string;
 
-    const result = await authenticate(email, password);
+    // const result = await authenticate(email, password);
 
-    if (result.error) {
-      setError(result.error);
-    } else {
-      // Redirect on success
-      router.push("/");
-      router.refresh(); // This refreshes the current route and fetches new data from the server
-    }
+    // if (result.error) {
+    //   setError(result.error);
+    // } else {
+    //   // Redirect on success
+    //   router.push("/");
+    //   router.refresh(); // This refreshes the current route and fetches new data from the server
+    // }
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      {error && <p className="text-red-500">{error}</p>}
-      <input type="email" name="email" required />
-      <input type="password" name="password" required />
-      <button type="submit">Sign In</button>
-    </form>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <div className="flex items-center justify-center mb-4">
+            <ShoppingBag className="h-12 w-12 text-primary" />
+          </div>
+          <CardTitle className="text-2xl font-bold text-center">
+            Login to Your Account
+          </CardTitle>
+          <CardDescription className="text-center">
+            Enter your email and password to access your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="your@email.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full">
+                Sign in
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+        <CardFooter className="flex flex-col items-center">
+          <div className="text-sm text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className="text-primary hover:underline">
+              Register here
+            </Link>
+          </div>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }
+
+// function onSubmit(values: FormValues) {
+//   console.log(values);
+
+  // const email = formData.get("email") as string;
+  // const password = formData.get("password") as string;
+
+  // const result = await authenticate(email, password);
+
+  // if (result.error) {
+  //   setError(result.error);
+  // } else {
+  //   // Redirect on success
+  //   router.push("/");
+  //   router.refresh(); // This refreshes the current route and fetches new data from the server
+  // }
+// }
