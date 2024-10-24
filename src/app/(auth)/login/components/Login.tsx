@@ -24,8 +24,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ShoppingBag } from "lucide-react";
-import { loginAction } from "@/actions/auth.action";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -56,14 +56,18 @@ export default function Login() {
     const email = values.email;
     const password = values.password;
 
-    const result = await loginAction({ email, password });
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
 
-    if (result.success) {
+    if (result?.error !== "CredentialsSignin") {
       // Redirect on success
       router.push("/");
       router.refresh(); // This refreshes the current route and fetches new data from the server
     } else {
-      setError(result?.error || "Something went wrong");
+      setError("Wrong email or password. Please try again.");
     }
   }
 

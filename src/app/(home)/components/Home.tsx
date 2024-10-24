@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,17 +11,17 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Search, ShoppingCart, User, ChevronRight } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const session = useSession();
 
-  const toggleLogin = () => {
-    setIsLoggedIn(!isLoggedIn);
-  };
+  const router = useRouter();
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <header className="bg-primary text-primary-foreground shadow-md">
+      <header className="bg-highlight text-highlight-foreground shadow-md">
         <div className="container mx-auto py-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <Link href="/" className="text-2xl font-bold">
@@ -54,11 +53,21 @@ export default function HomePage() {
               </Button>
               <Button
                 variant="ghost"
-                onClick={toggleLogin}
+                onClick={() => {
+                  if (session.status !== "authenticated") {
+                    router.push("/login");
+                  } else {
+                    signOut({
+                      redirect: false,
+                    });
+                    router.push("/login");
+                    router.refresh();
+                  }
+                }}
                 className="hidden sm:flex items-center"
               >
                 <User className="h-6 w-6 mr-2" />
-                {isLoggedIn ? "Logout" : "Login"}
+                {session.status === "authenticated" ? "Logout" : "Login"}
               </Button>
             </div>
           </div>

@@ -23,8 +23,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ShoppingBag } from "lucide-react";
-import { loginAction, registerUserAction } from "@/actions/auth.action";
+import { registerUserAction } from "@/actions/auth.action";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 const formSchema = z
   .object({
@@ -70,11 +71,19 @@ export default function Signup() {
 
     if (result.success) {
       setSuccess("Registration successful");
-      const data = await loginAction({ email, password });
-      if (data.success) {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+
+      if (result?.error !== "CredentialsSignin") {
         // Redirect on success
         router.push("/");
         router.refresh(); // This refreshes the current route and fetches new data from the server
+      } else {
+        setError("Failed to sign in after registration");
+        router.push("/login");
       }
     } else {
       setError(result.error || "Registration failed");
