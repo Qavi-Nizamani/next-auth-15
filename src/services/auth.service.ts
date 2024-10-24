@@ -31,11 +31,14 @@ export const registerUser = async (email: string, password: string) => {
         email: savedUser.email,
       },
     };
-  } catch (e: any) {
-    console.error("Registration error:", e);
+  } catch (error) {
+    console.error("Registration error:", error);
     return {
       success: false,
-      error: e?.message || "An error occurred during registration",
+      error:
+        error instanceof Error
+          ? error.message
+          : "An error occurred during registration",
     };
   }
 };
